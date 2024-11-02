@@ -1,0 +1,23 @@
+h1{
+text-align: center}
+
+.connect-button {
+  display: block;
+  margin: auto;
+}
+
+
+p{
+text-align: center}
+
+
+.button-container {
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0);
+  margin: 20px auto;
+}
+
+.prompt-button, .mint-button {
+  display: inline-block;
+  margin: 10px;
+}

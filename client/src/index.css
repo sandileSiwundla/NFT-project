@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-customBlue-light text-white;
+}
+
+h1, h2, h3, h4 {
+  @apply text-customBlue-dark font-bold;
+}
+
+a {
+  @apply text-customBlue hover:text-customBlue-dark;
+}
+
+.btn {
+  @apply bg-customBlue text-white py-2 px-4 rounded hover:bg-customBlue-dark transition;
+}
+
+.card {
+  @apply bg-white shadow-md rounded-lg p-4;
+}
