@@ -1,4 +1,6 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier:  GPL-3.0 OR MIT 
+
+
 
 // File: @openzeppelin/contracts/utils/Context.sol
 
@@ -1233,18 +1235,266 @@ abstract contract Ownable is Context {
     }
 }
 
+
+
+// @thirdweb-dev/contracts/blob/main/contracts/eip/interface/IERC165.sol
+
+// pragma solidity ^0.8.0;
+
+
+
+// /**
+//  * @dev Interface of the ERC165 standard, as defined in the
+//  * [EIP](https://eips.ethereum.org/EIPS/eip-165).
+//  *
+//  * Implementers can declare support of contract interfaces, which can then be
+//  * queried by others ({ERC165Checker}).
+//  *
+//  * For an implementation, see {ERC165}.
+//  */
+// interface IERC165 IERC165 {
+//     /**
+//      * @dev Returns true if this contract implements the interface defined by
+//      * `interfaceId`. See the corresponding
+//      * [EIP section](https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified)
+//      * to learn more about how these ids are created.
+//      *
+//      * This function call must use less than 30 000 gas.
+//      */
+//     function supportsInterface(bytes4 interfaceId) external view returns (bool);
+// }
+
+
+// @thirdweb-dev/contracts/blob/main/contracts/eip/interface/IERC2981.sol
 pragma solidity ^0.8.0;
 
-contract CWC is ERC721Enumerable, Ownable {
+
+/**
+ * @dev Interface for the NFT Royalty Standard.
+ *
+ * A standardized way to retrieve royalty payment information for non-fungible tokens (NFTs) to enable universal
+ * support for royalty payments across all NFT marketplaces and ecosystem participants.
+ *
+ * _Available since v4.5._
+ */
+interface IERC2981 is IERC165 {
+    /**
+     * @dev Returns how much royalty is owed and to whom, based on a sale price that may be denominated in any unit of
+     * exchange. The royalty amount is denominated and should be payed in that same unit of exchange.
+     */
+    function royaltyInfo(
+        uint256 tokenId,
+        uint256 salePrice
+    ) external view returns (address receiver, uint256 royaltyAmount);
+}
+
+// @thirdweb-dev/contracts/blob/main/contracts/extension/interface/IRoyalty.sol
+pragma solidity ^0.8.0;
+
+/// @author thirdweb
+
+
+/**
+ *  Thirdweb's `Royalty` is a contract extension to be used with any base contract. It exposes functions for setting and reading
+ *  the recipient of royalty fee and the royalty fee basis points, and lets the inheriting contract perform conditional logic
+ *  that uses information about royalty fees, if desired.
+ *
+ *  The `Royalty` contract is ERC2981 compliant.
+ */
+
+interface IRoyalty is IERC2981 {
+    struct RoyaltyInfo {
+        address recipient;
+        uint256 bps;
+    }
+
+    /// @dev Returns the royalty recipient and fee bps.
+    function getDefaultRoyaltyInfo() external view returns (address, uint16);
+
+    /// @dev Lets a module admin update the royalty bps and recipient.
+    function setDefaultRoyaltyInfo(address _royaltyRecipient, uint256 _royaltyBps) external;
+
+    /// @dev Lets a module admin set the royalty recipient for a particular token Id.
+    function setRoyaltyInfoForToken(uint256 tokenId, address recipient, uint256 bps) external;
+
+    /// @dev Returns the royalty recipient for a particular token Id.
+    function getRoyaltyInfoForToken(uint256 tokenId) external view returns (address, uint16);
+
+    /// @dev Emitted when royalty info is updated.
+    event DefaultRoyalty(address indexed newRoyaltyRecipient, uint256 newRoyaltyBps);
+
+    /// @dev Emitted when royalty recipient for tokenId is set
+    event RoyaltyForToken(uint256 indexed tokenId, address indexed royaltyRecipient, uint256 royaltyBps);
+}
+
+
+// @thirdweb-dev/contracts/blob/main/contracts/extension/Royalty.sol
+pragma solidity ^0.8.0;
+
+/// @author thirdweb
+
+
+/**
+ *  @title   Royalty
+ *  @notice  Thirdweb's `Royalty` is a contract extension to be used with any base contract. It exposes functions for setting and reading
+ *           the recipient of royalty fee and the royalty fee basis points, and lets the inheriting contract perform conditional logic
+ *           that uses information about royalty fees, if desired.
+ *
+ *  @dev     The `Royalty` contract is ERC2981 compliant.
+ */
+
+abstract contract Royalty is IRoyalty {
+    /// @dev The sender is not authorized to perform the action
+    error RoyaltyUnauthorized();
+
+    /// @dev The recipient is invalid
+    error RoyaltyInvalidRecipient(address recipient);
+
+    /// @dev The fee bps exceeded the max value
+    error RoyaltyExceededMaxFeeBps(uint256 max, uint256 actual);
+
+    /// @dev The (default) address that receives all royalty value.
+    address private royaltyRecipient;
+
+    /// @dev The (default) % of a sale to take as royalty (in basis points).
+    uint16 private royaltyBps;
+
+    /// @dev Token ID => royalty recipient and bps for token
+    mapping(uint256 => RoyaltyInfo) private royaltyInfoForToken;
+
+    /**
+     *  @notice   View royalty info for a given token and sale price.
+     *  @dev      Returns royalty amount and recipient for `tokenId` and `salePrice`.
+     *  @param tokenId          The tokenID of the NFT for which to query royalty info.
+     *  @param salePrice        Sale price of the token.
+     *
+     *  @return receiver        Address of royalty recipient account.
+     *  @return royaltyAmount   Royalty amount calculated at current royaltyBps value.
+     */
+    function royaltyInfo(
+        uint256 tokenId,
+        uint256 salePrice
+    ) external view virtual override returns (address receiver, uint256 royaltyAmount) {
+        (address recipient, uint256 bps) = getRoyaltyInfoForToken(tokenId);
+        receiver = recipient;
+        royaltyAmount = (salePrice * bps) / 10_000;
+    }
+
+    /**
+     *  @notice          View royalty info for a given token.
+     *  @dev             Returns royalty recipient and bps for `_tokenId`.
+     *  @param _tokenId  The tokenID of the NFT for which to query royalty info.
+     */
+    function getRoyaltyInfoForToken(uint256 _tokenId) public view override returns (address, uint16) {
+        RoyaltyInfo memory royaltyForToken = royaltyInfoForToken[_tokenId];
+
+        return
+            royaltyForToken.recipient == address(0)
+                ? (royaltyRecipient, uint16(royaltyBps))
+                : (royaltyForToken.recipient, uint16(royaltyForToken.bps));
+    }
+
+    /**
+     *  @notice Returns the defualt royalty recipient and BPS for this contract's NFTs.
+     */
+    function getDefaultRoyaltyInfo() external view override returns (address, uint16) {
+        return (royaltyRecipient, uint16(royaltyBps));
+    }
+
+    /**
+     *  @notice         Updates default royalty recipient and bps.
+     *  @dev            Caller should be authorized to set royalty info.
+     *                  See {_canSetRoyaltyInfo}.
+     *                  Emits {DefaultRoyalty Event}; See {_setupDefaultRoyaltyInfo}.
+     *
+     *  @param _royaltyRecipient   Address to be set as default royalty recipient.
+     *  @param _royaltyBps         Updated royalty bps.
+     */
+    function setDefaultRoyaltyInfo(address _royaltyRecipient, uint256 _royaltyBps) external override {
+        if (!_canSetRoyaltyInfo()) {
+            revert RoyaltyUnauthorized();
+        }
+
+        _setupDefaultRoyaltyInfo(_royaltyRecipient, _royaltyBps);
+    }
+
+    /// @dev Lets a contract admin update the default royalty recipient and bps.
+    function _setupDefaultRoyaltyInfo(address _royaltyRecipient, uint256 _royaltyBps) internal {
+        if (_royaltyBps > 10_000) {
+            revert RoyaltyExceededMaxFeeBps(10_000, _royaltyBps);
+        }
+
+        royaltyRecipient = _royaltyRecipient;
+        royaltyBps = uint16(_royaltyBps);
+
+        emit DefaultRoyalty(_royaltyRecipient, _royaltyBps);
+    }
+
+    /**
+     *  @notice         Updates default royalty recipient and bps for a particular token.
+     *  @dev            Sets royalty info for `_tokenId`. Caller should be authorized to set royalty info.
+     *                  See {_canSetRoyaltyInfo}.
+     *                  Emits {RoyaltyForToken Event}; See {_setupRoyaltyInfoForToken}.
+     *
+     *  @param _recipient   Address to be set as royalty recipient for given token Id.
+     *  @param _bps         Updated royalty bps for the token Id.
+     */
+    function setRoyaltyInfoForToken(uint256 _tokenId, address _recipient, uint256 _bps) external override {
+        if (!_canSetRoyaltyInfo()) {
+            revert RoyaltyUnauthorized();
+        }
+
+        _setupRoyaltyInfoForToken(_tokenId, _recipient, _bps);
+    }
+
+    /// @dev Lets a contract admin set the royalty recipient and bps for a particular token Id.
+    function _setupRoyaltyInfoForToken(uint256 _tokenId, address _recipient, uint256 _bps) internal {
+        if (_bps > 10_000) {
+            revert RoyaltyExceededMaxFeeBps(10_000, _bps);
+        }
+
+        royaltyInfoForToken[_tokenId] = RoyaltyInfo({ recipient: _recipient, bps: _bps });
+
+        emit RoyaltyForToken(_tokenId, _recipient, _bps);
+    }
+
+    /// @dev Returns whether royalty info can be set in the given execution context.
+    function _canSetRoyaltyInfo() internal view virtual returns (bool);
+}
+
+
+pragma solidity ^0.8.0;
+
+
+
+contract UC is ERC721Enumerable, Ownable, Royalty {
     using Strings for uint256;
     string public baseURI;
     string public baseExtension = ".json";
-    uint256 public cost = 0.001 ether;
-    uint256 public maxSupply = 10;
-    uint256 public maxMintAmount = 3;
+    uint256 public cost = 1 ether;
+    uint256 public maxSupply = 100;
+    uint256 public maxMintAmount = 5;
     bool public paused = false;
+    address public deployer;
+    address public seller;
+    uint256 public royaltiesPercentage = 2;
+    uint256 public royaltyAmount;
+    uint256 public finalPrice;
 
-    constructor() ERC721("Umkhonto Collection", "UC") {}
+    constructor() ERC721("Umkhonto Collect", "UC") {
+        deployer = msg.sender;
+    }
+
+        function _canSetRoyaltyInfo()
+        internal
+        view
+        virtual
+        override
+        returns (bool)
+    {
+        return msg.sender == deployer;
+    }
+
         // internal
         function _baseURI() internal view virtual override returns (string memory) {
         return "ipfs://QmdnHnBXSe9okMiGYJCPMfLevi6rrsFfd6bNJ3HEchPHZU/";
@@ -1259,7 +1509,7 @@ contract CWC is ERC721Enumerable, Ownable {
             require(supply + _mintAmount <= maxSupply);
             
             if (msg.sender != owner()) {
-            require(msg.value == cost * _mintAmount, "Need to send 0.001 ether!");
+            require(msg.value == cost * _mintAmount, "Need to send 0.0001 ether!");
             }
             
             for (uint256 i = 1; i <= _mintAmount; i++) {
@@ -1279,8 +1529,23 @@ contract CWC is ERC721Enumerable, Ownable {
             }
             return tokenIds;
         }
-    
+        function buyNFT(address to, uint256 _tokenBeingBought) public payable {
+            require(msg.value == cost, "Need to send 0.0001 ether!");
+            require(_exists(_tokenBeingBought), "Token has not been minted.");
+            seller = ownerOf(_tokenBeingBought);
+            require(msg.sender != seller);
+            royal(msg.value);
+            payable(to).transfer(msg.value);
+            _safeTransfer(seller, to, _tokenBeingBought, "");
+
+        }
+
+        function royal(uint256 saleAmount) public payable {
+            royaltyAmount = (saleAmount * royaltiesPercentage) / 100;
+            payable(deployer).transfer(royaltyAmount);
+        }
         
+
         function tokenURI(uint256 tokenId)
         public
         view
@@ -1319,4 +1584,4 @@ contract CWC is ERC721Enumerable, Ownable {
         function withdraw() public payable onlyOwner() {
             require(payable(msg.sender).send(address(this).balance));
         }
-}
+        }
