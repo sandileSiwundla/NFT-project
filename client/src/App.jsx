@@ -81,7 +81,7 @@ function App() {
   function Navbar() {
     return (
       <nav className="navbar">
-        <div className="navbar-brand">My NFT App</div>
+        <div className="navbar-brand">Umkhonto</div>
         <ul className="navbar-links">
           <li><Link to="/create">Create NFT</Link></li>
           <li><Link to="/look-up">Look Up NFT</Link></li>

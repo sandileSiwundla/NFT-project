@@ -4,7 +4,7 @@ import './Navbar.css'; // Optional: for additional styles
 function Navbar() {
   return (
     <nav className="navbar">
-      <div className="navbar-brand">My NFT App</div>
+      <div className="navbar-brand">Umkhonto</div>
       <ul className="navbar-links">
         <li><a href="#create">Create NFT</a></li>
         <li><a href="#look-up">Look Up NFT</a></li>
