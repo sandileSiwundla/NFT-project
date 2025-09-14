@@ -1,14 +1,23 @@
-.navbar-links {
-  transition: all 0.3s ease-in-out;
+h1{
+text-align: center}
+
+.connect-button {
+  display: block;
+  margin: auto;
 }
 
-.navbar-links a:focus {
-  outline: 2px solid #00bfff;
-  outline-offset: 4px;
+
+p{
+text-align: center}
+
+
+.button-container {
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0);
+  margin: 20px auto;
 }
 
-.navbar-toggle {
-  background: none;
-  border: none;
-  color: #fff;
+.prompt-button, .mint-button {
+  display: inline-block;
+  margin: 10px;
 }
