@@ -5,15 +5,21 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="navbar">
+    <nav className="navbar" role="navigation" aria-label="main navigation">
       <div className="navbar-brand">Umkhonto</div>
-      <div
+      <button
         className="navbar-toggle"
+        aria-controls="navbar-links"
+        aria-expanded={isOpen}
+        aria-label="Toggle navigation"
         onClick={() => setIsOpen(!isOpen)}
       >
         ☰
-      </div>
-      <ul className={`navbar-links ${isOpen ? 'active' : ''}`}>
+      </button>
+      <ul
+        id="navbar-links"
+        className={`navbar-links ${isOpen ? 'active' : ''}`}
+      >
         <li><a href="#create">Create NFT</a></li>
         <li><a href="#look-up">Look Up NFT</a></li>
         <li><a href="#buy">Buy NFT</a></li>
