@@ -22,7 +22,7 @@ function Navbar() {
       >
         <li><a href="#create">Create NFT</a></li>
         <li><a href="#look-up">Look Up NFT</a></li>
-        <li><a href="#buy">Buy NFT</a></li>
+        <li><a href="#buy">Buy the real NFT</a></li>
       </ul>
     </nav>
   );
