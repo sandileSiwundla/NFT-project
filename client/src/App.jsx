@@ -27,11 +27,14 @@ function App() {
         const instance = nftContract(web3Instance);
         setContract(instance);
         setIsConnected(true);
+        fetchNFTsFromOpenSea(accounts[0]);
       } catch (error) {
-        console.error(error);
+        console.error("Error connecting to wallet:", error);
+        alert("Failed to connect to wallet. Please try again.");
       }
     } else {
       console.error('Web3 not found');
+      alert("Web3 not found. Please install MetaMask or another Web3 provider.");
     }
   };
 
@@ -46,6 +49,7 @@ function App() {
   }; 
 
   const mint = async () => {
+    promptForMintAmount();
     try {
       const costPerNFT = Web3.utils.toWei('0.05', 'ether');
       const totalCost = (costPerNFT * mintAmount).toString();
@@ -86,6 +90,13 @@ function App() {
           <li><Link to="/create">Create NFT</Link></li>
           <li><Link to="/look-up">Look Up NFT</Link></li>
           <li><Link to="/buy">Buy NFT</Link></li>
+          <li>
+            {!isConnected ? (
+              <button onClick={connectWallet}>Connect Wallet</button>
+            ) : (
+              <span>Connected: {accounts[0]}</span>
+            )}
+          </li>
         </ul>
       </nav>
     );
@@ -99,7 +110,18 @@ function App() {
           <Route path="/create" element={<CreateNFT />} />
           <Route path="/look-up" element={<LookUpNFT />} />
           <Route path="/buy" element={<BuyNFT />} />
-          <Route path="/" element={<MyButtonIslands />} />
+          <Route path="/" element={<>
+            <MyButtonIslands />
+            <div>
+              <h3>Minted NFTs</h3>
+              {mintedNFTs.map((nft) => (
+                <div key={nft.token_id}>
+                  <img src={nft.image_url} alt={nft.name} />
+                  <p>{nft.name}</p>
+                </div>
+              ))}
+            </div>
+          </>} />
         </Routes>
       </div>
     </Router>

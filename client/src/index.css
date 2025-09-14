@@ -1,23 +1,27 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 body {
-  @apply bg-customBlue-light text-white;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
 }
 
-h1, h2, h3, h4 {
-  @apply text-customBlue-dark font-bold;
+.button-island {
+    background: rgb(10, 3, 79);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px 0; 
+    margin-top: 100px; 
+    cursor: pointer;
+    transition: background 0.3s; /* Add a transition effect */
 }
 
-a {
-  @apply text-customBlue hover:text-customBlue-dark;
+.button-island:hover {
+    background: rgb(15, 10, 90); /* Change color on hover */
 }
 
-.btn {
-  @apply bg-customBlue text-white py-2 px-4 rounded hover:bg-customBlue-dark transition;
-}
-
-.card {
-  @apply bg-white shadow-md rounded-lg p-4;
+p {
+    font-size: 0.9rem; /* Increased paragraph font size */
+    color: #c3bdbd;
+    text-align: left; 
 }

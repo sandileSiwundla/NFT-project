@@ -1,39 +1,38 @@
 .navbar {
-    background-color: rgb(6, 2, 47);
-    color: #fff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px; /* Vertical padding */
-    width: 100%; /* Ensures the navbar spans the full width */
-    position: fixed; /* Keeps it at the top of the page */
-    top: 0; /* Aligns it to the top */
-    left: 0; /* Aligns it to the left */
-    z-index: 1000; /* Ensures it stays above other content */
-  }
-  
-  .navbar-brand {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
-  .navbar-links {
-    list-style: none;
-    display: flex;
-    gap: 20px; /* Space between links */
-  }
-  
-  .navbar-links li {
-    display: inline;
-  }
-  
-  .navbar-links a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 1.1rem;
-  }
-  
-  .navbar-links a:hover {
-    text-decoration: underline;
-  }
-  
+  background-color: rgba(6, 2, 47, 0.9); /* transparency */
+  backdrop-filter: blur(6px); /* blur effect */
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); /* subtle shadow */
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.navbar-links a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.navbar-links a:hover {
+  color: #00bfff;
+  text-decoration: underline;
+}
