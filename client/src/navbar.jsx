@@ -1,28 +1,14 @@
-import React, { useState } from 'react';
-import './Navbar.css';
+import React from 'react';
+import './Navbar.css'; // Optional: for additional styles
 
 function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <nav className="navbar" role="navigation" aria-label="main navigation">
+    <nav className="navbar">
       <div className="navbar-brand">Umkhonto</div>
-      <button
-        className="navbar-toggle"
-        aria-controls="navbar-links"
-        aria-expanded={isOpen}
-        aria-label="Toggle navigation"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        ☰
-      </button>
-      <ul
-        id="navbar-links"
-        className={`navbar-links ${isOpen ? 'active' : ''}`}
-      >
+      <ul className="navbar-links">
         <li><a href="#create">Create NFT</a></li>
         <li><a href="#look-up">Look Up NFT</a></li>
-        <li><a href="#buy">Buy the real NFT</a></li>
+        <li><a href="#buy">Buy NFT</a></li>
       </ul>
     </nav>
   );
