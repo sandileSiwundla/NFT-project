@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Umkhonto NFT Navbar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .content {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .commit {
+            background: rgba(6, 2, 47, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid #2575fc;
+        }
+        
+        .commit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .commit-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #6a11cb;
+        }
+        
+        .commit-hash {
+            font-family: monospace;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        .commit-desc {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .code-block {
+            background: #1e1e2e;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin: 10px 0;
+            border: 1px solid #444;
+        }
+        
+        /* Improved Navbar Styles */
+        .navbar {
+            background-color: rgba(6, 2, 47, 0.95);
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            padding: 10px 5%;
+            background-color: rgba(6, 2, 47, 0.98);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .navbar-links {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+        
+        .navbar-links li {
+            position: relative;
+        }
+        
+        .navbar-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .navbar-links a:hover {
+            color: #6a11cb;
+        }
+        
+        .navbar-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            transition: width 0.3s ease;
+        }
+        
+        .navbar-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-cta {
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(106, 17, 203, 0.4);
+        }
+        
+        .navbar-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1001;
+        }
+        
+        .navbar-toggle span {
+            width: 100%;
+            height: 3px;
+            background-color: #fff;
+            border-radius: 5px;
+            transition: all 0.3s linear;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-toggle {
+                display: flex;
+            }
+            
+            .navbar-links {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background-color: rgba(6, 2, 47, 0.98);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+                padding: 20px 0;
+                gap: 15px;
+                backdrop-filter: blur(10px);
+            }
+            
+            .navbar-links.active {
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-cubes"></i> Umkhonto
+        </div>
+        
+        <button class="navbar-toggle" id="navbarToggle" aria-controls="navbar-links" aria-expanded="false" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <ul id="navbar-links" class="navbar-links">
+            <li><a href="#create"><i class="fas fa-plus-circle"></i> Create NFT</a></li>
+            <li><a href="#look-up"><i class="fas fa-search"></i> Look Up NFT</a></li>
+            <li><a href="#buy" class="nav-cta"><i class="fas fa-shopping-cart"></i> Buy NFT</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <h1>Navbar Improvements with Git Commits</h1>
+            
+            <div class="commit">
+                <div class="commit-header">
+                    <div class="commit-title">feat: Add responsive design with hamburger menu</div>
+                    <div class="commit-hash">a1b2c3d</div>
+                </div>
+                <p class="commit-desc">Implemented a mobile-responsive navbar with hamburger menu for smaller screens. Added smooth slide-in animation and improved touch targets for mobile users.</p>
+                <div class="code-block">
+/* Media query for mobile responsiveness */
+@media (max-width: 768px) {
+    .navbar-toggle {
+        display: flex;
+    }
+    
+    .navbar-links {
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        padding: 20px 0;
+        gap: 15px;
+    }
+    
+    .navbar-links.active {
+        left: 0;
+    }
+}</div>
+            </div>
+            
+            <div class="commit">
+                <div class="commit-header">
+                    <div class="commit-title">feat: Enhance visual design with gradients and animations</div>
+                    <div class="commit-hash">e4f5g6h</div>
+                </div>
+                <p class="commit-desc">Improved the visual design with gradient effects, smooth animations, and a modern aesthetic. Added hover effects and a call-to-action button style.</p>
+                <div class="code-block">
+/* Enhanced visual design */
+.navbar {
+    background-color: rgba(6, 2, 47, 0.95);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.navbar-brand {
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.navbar-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    transition: width 0.3s ease;
+}
+
+.navbar-links a:hover::after {
+    width: 100%;
+}</div>
+            </div>
+            
+            <div class="commit">
+                <div class="commit-header">
+                    <div class="commit-title">feat: Add scroll behavior and interactive elements</div>
+                    <div class="commit-hash">i7j8k9l</div>
+                </div>
+                <p class="commit-desc">Implemented scroll event listener to change navbar style on scroll. Added interactive icons and improved user experience with visual feedback.</p>
+                <div class="code-block">
+/* Navbar when scrolled */
+.navbar.scrolled {
+    padding: 10px 5%;
+    background-color: rgba(6, 2, 47, 0.98);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+// JavaScript to handle scroll event
+window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('navbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});</div>
+            </div>
+            
+            <p style="text-align: center; margin-top: 30px; opacity: 0.8;">
+                These improvements enhance both the functionality and visual appeal of the navbar, making it more modern and user-friendly.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Toggle mobile menu
+        document.getElementById('navbarToggle').addEventListener('click', function() {
+            const navbarLinks = document.getElementById('navbar-links');
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            
+            navbarLinks.classList.toggle('active');
+            this.setAttribute('aria-expanded', !isExpanded);
+        });
+        
+        // Close mobile menu when clicking on a link
+        const navLinks = document.querySelectorAll('.navbar-links a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navbar-links').classList.remove('active');
+                document.getElementById('navbarToggle').setAttribute('aria-expanded', 'false');
+            });
+        });
+        
+        // Change navbar style on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>

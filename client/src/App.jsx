@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Web3 from 'web3';
 import nftContract from './nftContract';
 import './app.css'; 
-import './Navbar.css';
+import "./navbar"
 import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
 
 import CreateNFT from './CreateNFT';
