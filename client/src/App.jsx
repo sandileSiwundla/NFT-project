@@ -6,7 +6,6 @@ import "./navbar"
 import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
 
 import CreateNFT from './CreateNFT';
-import LookUpNFT from './LookUpNFT';
 import BuyNFT from './BuyNFT';
 
 function App() {
