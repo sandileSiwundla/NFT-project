@@ -909,7 +909,7 @@ function BuyNFT() {
       ]
   };
   
-  function BuyNFT() {
+  
   const totalImages = 10;
   const baseURL = 'https://coffee-famous-reindeer-467.mypinata.cloud/ipfs/QmZ8antBrQPFjCW3nY7aSpLWZCSeam7cmXBjXkXNqnQCnx/';
   const imageUrls = Array.from({ length: totalImages }, (_, index) => `${baseURL}${index}.jpg`);
@@ -967,7 +967,7 @@ function BuyNFT() {
                 alert('Minting succeeded, but no Transfer event was emitted.');
             }
 
-            closeModal(); // Close modal after successful purchase
+            closeModal();
 
         } catch (error) {
             console.error('Error while connecting to MetaMask or minting:', error);
@@ -1008,7 +1008,6 @@ function BuyNFT() {
         ))}
       </div>
 
-      {/* NFT Detail Modal */}
       {selectedImage !== null && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
