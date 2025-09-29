@@ -1,23 +1,245 @@
-h1{
-text-align: center}
-
-.connect-button {
-  display: block;
-  margin: auto;
+/* app.css */
+:root {
+  --primary-color: #2a2a2a;
+  --secondary-color: #4a4a4a;
+  --accent-color: #8b4513;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --struggle-red: #8b0000;
+  --struggle-blue: #1e3a5f;
+  --background: #1a1a1a;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-p{
-text-align: center}
+body {
+  font-family: 'Courier New', 'SF Mono', Monaco, monospace;
+  background-color: var(--background);
+  color: var(--text-primary);
+  line-height: 1.6;
+  background-image: 
+    radial-gradient(circle at 25% 25%, #2a2a2a 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, #1e1e1e 0%, transparent 50%);
+}
 
+/* Navbar Styles */
+.navbar {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #1a1a1a 100%);
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
 
-.button-container {
+.navbar-brand {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  align-items: center;
+}
+
+.navbar-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+.navbar-links a:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-links button {
+  background: linear-gradient(45deg, var(--struggle-blue), var(--struggle-red));
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.2s ease;
+}
+
+.navbar-links button:hover {
+  transform: translateY(-2px);
+}
+
+/* Button Islands - The Main Feature */
+.button-island {
+  background: linear-gradient(135deg, rgba(42, 42, 42, 0.9), rgba(26, 26, 26, 0.9));
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 1.5rem auto;
+  max-width: 500px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.button-island::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.button-island:hover::before {
+  left: 100%;
+}
+
+.button-island:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-color);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* NFT Grid Styles */
+.nft-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.nft-card {
+  background: var(--primary-color);
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.nft-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-color);
+}
+
+.nft-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.nft-card p {
+  color: var(--text-primary);
+  font-size: 0.9rem;
   text-align: center;
-  background-color: rgba(0, 0, 0, 0);
-  margin: 20px auto;
+  margin-top: 0.5rem;
 }
 
-.prompt-button, .mint-button {
-  display: inline-block;
-  margin: 10px;
+/* Typography */
+h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin: 2rem 0;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+h2 {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  color: var(--text-primary);
+  margin: 2rem 0 1rem 0;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+p {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+/* Connection Status */
+.connection-status {
+  background: rgba(139, 0, 0, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid var(--struggle-red);
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .navbar-links li {
+    width: 100%;
+    text-align: center;
+  }
+
+  .button-island {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .nft-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+}
+
+/* Loading States */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Error States */
+.error-message {
+  background: rgba(139, 0, 0, 0.3);
+  border: 1px solid var(--struggle-red);
+  color: #ff6b6b;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem auto;
+  max-width: 500px;
+  text-align: center;
 }

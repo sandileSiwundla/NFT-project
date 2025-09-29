@@ -131,20 +131,34 @@ function MyButtonIslands() {
   const navigate = useNavigate();
 
   return (
-    <>
-      <div className="button-island" onClick={() => navigate('/create')}>
-        <h2 style={{ fontSize: '1.5rem', color: '#fff' }}>Create NFT</h2>
-        <p style={{ textAlign: 'left', fontSize: '0.9rem', color: '#c3bdbd' }}>
-          Start creating your own NFTs by uploading your digital art, music, or other collectibles!
-        </p>
+    <Router>
+      <div className="app-container">
+        <Navbar />
+        <Routes>
+          <Route path="/create" element={<CreateNFT />} />
+          <Route path="/look-up" element={<LookUpNFT />} />
+          <Route path="/buy" element={<BuyNFT />} />
+          <Route path="/" element={
+            <div className="home-page">
+              <h1>Everyday Struggles</h1>
+              <p>Stories preserved as digital artifacts</p>
+              <MyButtonIslands />
+              <div className="nft-grid">
+                <h3>Minted Stories</h3>
+                <div className="nft-grid">
+                  {mintedNFTs.map((nft) => (
+                    <div key={nft.token_id} className="nft-card">
+                      <img src={nft.image_url} alt={nft.name} />
+                      <p>{nft.name || 'Untitled Struggle'}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          } />
+        </Routes>
       </div>
-      <div className="button-island" onClick={() => navigate('/buy')}>
-        <h2 style={{ fontSize: '1.5rem', color: '#fff' }}>Buy NFT</h2>
-        <p style={{ textAlign: 'left', fontSize: '0.9rem', color: '#c3bdbd' }}>
-          Browse available NFTs and make purchases securely using cryptocurrency.
-        </p>
-      </div>
-    </>
+    </Router>
   );
 }
 
