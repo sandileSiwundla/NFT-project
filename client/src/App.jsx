@@ -87,7 +87,6 @@ function App() {
         <div className="navbar-brand">Umkhonto</div>
         <ul className="navbar-links">
           <li><Link to="/create">Create NFT</Link></li>
-          <li><Link to="/look-up">Look Up NFT</Link></li>
           <li><Link to="/buy">Buy NFT</Link></li>
           <li>
             {!isConnected ? (
