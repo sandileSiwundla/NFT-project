@@ -909,13 +909,13 @@ function BuyNFT() {
       ]
   };
   
-  const totalImages = 10; // Change this to the total number of images you have
+  function BuyNFT() {
+  const totalImages = 10;
   const baseURL = 'https://coffee-famous-reindeer-467.mypinata.cloud/ipfs/QmZ8antBrQPFjCW3nY7aSpLWZCSeam7cmXBjXkXNqnQCnx/';
-
-
   const imageUrls = Array.from({ length: totalImages }, (_, index) => `${baseURL}${index}.jpg`);
 
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleImageClick = (index) => {
     setSelectedImage(index);
@@ -927,19 +927,15 @@ function BuyNFT() {
 
   const handleBuyClick = async () => {
     if (typeof window.ethereum !== 'undefined') {
+        setIsLoading(true);
         try {
-            // Initialize Web3 with window.ethereum provider
             const web3 = new Web3(window.ethereum);
-            
-            // Request accounts from MetaMask
             await window.ethereum.request({ method: "eth_requestAccounts" });
             const accounts = await web3.eth.getAccounts();
 
-            // Check the current chain ID
             const chainId = await web3.eth.getChainId();
-            const sepoliaChainId = 0xaa36a7; // Sepolia testnet chain ID
+            const sepoliaChainId = 0xaa36a7;
 
-            // If not on Sepolia, switch the network to Sepolia
             if (chainId !== sepoliaChainId) {
                 await window.ethereum.request({
                     method: "wallet_switchEthereumChain",
@@ -947,19 +943,16 @@ function BuyNFT() {
                 });
             }
 
-            // Set up the contract
+            // TODO: Import your actual contract ABI
             const nftContract = new web3.eth.Contract(
-                umkhontoContract.abi, // Ensure `umkhontoContract.abi` is defined elsewhere
-                "0xfcdb2ca535d8004eb00dc39f5b62c9df4d053916" // Your contract address
+                [], // Replace with your actual contract ABI: umkhontoContract.abi
+                "0xfcdb2ca535d8004eb00dc39f5b62c9df4d053916"
             );
 
-            const mintAmount = 1; // Number of NFTs to mint
-            const value = web3.utils.toWei((0.01 * mintAmount).toString(), 'ether'); // Cost of minting in Wei
+            const mintAmount = 1;
+            const value = web3.utils.toWei((0.01 * mintAmount).toString(), 'ether');
+            const recipient = accounts[0];
 
-            // Ensure you're passing the correct address to mint the token for
-            const recipient = accounts[0]; // Use the connected wallet's address for minting
-
-            // Call the mint function on the contract
             const result = await nftContract.methods.mint(recipient, mintAmount).send({
                 from: recipient,
                 value: value,
@@ -967,145 +960,120 @@ function BuyNFT() {
 
             console.log('Minted NFT:', result);
 
-            // Handle the result (if needed)
             if (result.events && result.events.Transfer) {
                 const tokenId = result.events.Transfer.returnValues.tokenId;
-                alert(`Successfully minted NFT! Token ID: ${tokenId}`);
+                alert(`Successfully minted NFT! Token ID: ${tokenId}\nNever forget this moment.`);
             } else {
                 alert('Minting succeeded, but no Transfer event was emitted.');
             }
 
+            closeModal(); // Close modal after successful purchase
+
         } catch (error) {
             console.error('Error while connecting to MetaMask or minting:', error);
             alert('An error occurred. Please check the console for details.');
+        } finally {
+            setIsLoading(false);
         }
     } else {
         alert('MetaMask is not installed. Please install it to mint NFTs.');
     }
-};
-
+  };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '20px' }}>
-      <h1>Buy NFT</h1>
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+    <div className="buy-nft-container">
+      <div className="buy-nft-header">
+        <h1>Discover Stories</h1>
+        <p className="tagline">Own a piece of real human experience. Never forget.</p>
+      </div>
+
+      <div className="nft-gallery">
         {imageUrls.map((url, index) => (
-          <div 
-            key={index} 
-            style={{ 
-              margin: '10px', 
-              position: 'relative', 
-              width: '220px', 
-              height: '220px', 
-              overflow: 'hidden' 
-            }}
-          >
+          <div key={index} className="nft-gallery-item">
             <button 
               onClick={() => handleImageClick(index)} 
-              style={{ 
-                all: 'unset', // Resets all button styles
-                cursor: 'pointer', 
-                width: '100%', 
-                height: '100%', 
-                position: 'relative', 
-                borderRadius: '15px', 
-                overflow: 'hidden' 
-              }}
+              className="nft-image-button"
             >
               <img 
                 src={url} 
-                alt={`NFT ${index}`} 
-                style={{ 
-                  width: '100%', 
-                  height: '100%', 
-                  objectFit: 'cover', 
-                  borderRadius: '15px' 
-                }} 
+                alt={`Everyday Struggle ${index}`} 
+                className="nft-gallery-image" 
               />
-              <p style={{ 
-                position: 'absolute', 
-                bottom: '5px', 
-                left: '5px', 
-                color: 'white', 
-                backgroundColor: 'rgb(10, 3, 79)', 
-                padding: '5px',
-                borderRadius: '5px' 
-              }}>
-                NFT {index}
-              </p>
+              <div className="nft-overlay">
+                <span className="nft-number">Story #{index}</span>
+                <span className="view-details">View Details</span>
+              </div>
             </button>
           </div>
         ))}
       </div>
 
+      {/* NFT Detail Modal */}
       {selectedImage !== null && (
-        <div 
-          style={{
-            position: 'fixed',
-            top: '0',
-            left: '0',
-            right: '0',
-            bottom: '0',
-            backgroundColor: 'rgb(10, 3, 79)', // Semi-transparent background
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: '1000',
-          }}
-          onClick={closeModal} // Close modal when clicking outside
-        >
-          <div style={{
-            backgroundColor: 'gray',
-            padding: '20px',
-            borderRadius: '10px',
-            width: '70%', // Adjust width to give space for text
-            height: '60%', // Fixed height for the modal
-            display: 'flex',
-            alignItems: 'center',
-          }}>
-            <img 
-              src={imageUrls[selectedImage]} 
-              alt={`NFT ${selectedImage}`} 
-              style={{ 
-                width: '50%', // Take half of the modal width
-                height: 'auto', 
-                borderRadius: '10px',
-              }} 
-            />
-            <div style={{ padding: '20px', width: '50%' }}>
-              <h2>NFT {selectedImage}</h2>
-              <p style={{ textAlign: 'left' }}>
-                This NFT represents a unique moment in street photography, capturing the vibrancy of urban life and the stories within.
-              </p>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-image-section">
+              <img 
+                src={imageUrls[selectedImage]} 
+                alt={`Everyday Struggle ${selectedImage}`} 
+                className="modal-image" 
+              />
+            </div>
+            
+            <div className="modal-info-section">
+              <div className="modal-header">
+                <h2>Everyday Struggle #{selectedImage}</h2>
+                <p className="modal-tagline">Never Forget</p>
+              </div>
+              
+              <div className="modal-description">
+                <h3>The Story</h3>
+                <p>
+                  This NFT captures a raw, authentic moment from daily life—a story of resilience, 
+                  struggle, or quiet triumph. Each piece represents real human experience preserved 
+                  forever on the blockchain.
+                </p>
+                <div className="nft-details">
+                  <div className="detail-item">
+                    <span className="detail-label">Collection:</span>
+                    <span className="detail-value">Everyday Struggles</span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="detail-label">Price:</span>
+                    <span className="detail-value">0.01 ETH</span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="detail-label">Blockchain:</span>
+                    <span className="detail-value">Ethereum Sepolia</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-actions">
                 <button 
                   onClick={closeModal} 
-                  style={{ 
-                    padding: '10px 20px', 
-                    borderRadius: '25px', 
-                    backgroundColor: '#f44336', // Red for close
-                    color: 'white', 
-                    border: 'none', 
-                    cursor: 'pointer' 
-                  }}
+                  className="btn btn-secondary"
+                  disabled={isLoading}
                 >
                   Close
                 </button>
                 <button 
                   onClick={handleBuyClick} 
-                  style={{ 
-                    padding: '10px 20px', 
-                    borderRadius: '25px', 
-                    backgroundColor: '#4CAF50', // Green for buy
-                    color: 'white', 
-                    border: 'none', 
-                    cursor: 'pointer' 
-                  }}
+                  className="btn btn-primary"
+                  disabled={isLoading}
                 >
-                  Buy
+                  {isLoading ? 'Minting...' : 'Preserve This Story'}
                 </button>
               </div>
+
+              <div className="modal-footer">
+                <p>By purchasing this NFT, you help preserve real human stories forever.</p>
+              </div>
             </div>
+
+            <button className="modal-close" onClick={closeModal}>
+              ×
+            </button>
           </div>
         </div>
       )}
