@@ -139,12 +139,6 @@ function MyButtonIslands() {
           Start creating your own NFTs by uploading your digital art, music, or other collectibles!
         </p>
       </div>
-      <div className="button-island" onClick={() => navigate('/look-up')}>
-        <h2 style={{ fontSize: '1.5rem', color: '#fff' }}>Look Up NFT</h2>
-        <p style={{ textAlign: 'left', fontSize: '0.9rem', color: '#c3bdbd' }}>
-          Search for your favorite NFTs, view their details, and explore the marketplace.
-        </p>
-      </div>
       <div className="button-island" onClick={() => navigate('/buy')}>
         <h2 style={{ fontSize: '1.5rem', color: '#fff' }}>Buy NFT</h2>
         <p style={{ textAlign: 'left', fontSize: '0.9rem', color: '#c3bdbd' }}>
