@@ -12,7 +12,10 @@ import BuyNFT from './BuyNFT';
 function Navbar({ isConnected, accounts, connectWallet }) {
   return (
     <nav className="navbar">
-      <div className="navbar-brand">Umkhonto</div>
+      <div className="navbar-brand">
+        <div className="brand-main">Umkhonto</div>
+        <div className="brand-tagline">Never Forget</div>
+      </div>
       <ul className="navbar-links">
         <li><Link to="/create">Create NFT</Link></li>
         <li><Link to="/look-up">Look Up NFT</Link></li>
@@ -36,12 +39,14 @@ function MyButtonIslands() {
   return (
     <div className="button-container">
       <div className="button-island" onClick={() => navigate('/create')}>
-        <h2>Create NFT</h2>
-        <p>Start creating your own NFTs by uploading your digital art, music, or other collectibles!</p>
+        <h2>Preserve Your Story</h2>
+        <p>Mint your daily struggles as eternal NFTs. Never forget the moments that shaped you.</p>
+        <div className="tagline">Never Forget</div>
       </div>
       <div className="button-island" onClick={() => navigate('/buy')}>
-        <h2>Buy NFT</h2>
-        <p>Browse available NFTs and make purchases securely using cryptocurrency.</p>
+        <h2>Discover Stories</h2>
+        <p>Connect with others' experiences. Own a piece of real human struggle and resilience.</p>
+        <div className="tagline">Never Forget</div>
       </div>
     </div>
   );
@@ -92,7 +97,7 @@ function App() {
       const costPerNFT = Web3.utils.toWei('0.05', 'ether');
       const totalCost = (costPerNFT * mintAmount).toString();
       await contract.methods.mint(accounts[0], mintAmount).send({ from: accounts[0], value: totalCost });
-      alert('Minting successful!');
+      alert('Your story has been preserved. Never forget.');
       fetchNFTsFromOpenSea(accounts[0]);
     } catch (error) {
       console.error("Minting failed!", error);
@@ -134,18 +139,23 @@ function App() {
           <Route path="/buy" element={<BuyNFT />} />
           <Route path="/" element={
             <div className="home-page">
-              <h1>Everyday Struggles</h1>
-              <p>Stories preserved as digital artifacts</p>
+              <div className="hero-section">
+                <h1>Everyday Struggles</h1>
+                <p className="hero-tagline">Preserved forever on the blockchain</p>
+                <div className="main-tagline">Never Forget</div>
+              </div>
               <MyButtonIslands />
               
               {mintedNFTs.length > 0 && (
                 <div className="minted-nfts-section">
-                  <h3>Your Minted Stories</h3>
+                  <h3>Your Preserved Stories</h3>
+                  <p className="section-tagline">Moments captured forever. Never forget.</p>
                   <div className="nft-grid">
                     {mintedNFTs.map((nft) => (
                       <div key={nft.token_id} className="nft-card">
                         <img src={nft.image_url} alt={nft.name} />
                         <p>{nft.name || 'Untitled Struggle'}</p>
+                        <div className="nft-tagline">Never Forget</div>
                       </div>
                     ))}
                   </div>
@@ -154,6 +164,12 @@ function App() {
             </div>
           } />
         </Routes>
+        
+        {/* Footer with the saying */}
+        <footer className="app-footer">
+          <div className="footer-tagline">Never Forget</div>
+          <p>Preserving everyday struggles on the blockchain</p>
+        </footer>
       </div>
     </Router>
   );
