@@ -107,7 +107,6 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/create" element={<CreateNFT />} />
-          <Route path="/look-up" element={<LookUpNFT />} />
           <Route path="/buy" element={<BuyNFT />} />
           <Route path="/" element={<>
             <MyButtonIslands />
