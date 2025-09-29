@@ -2,11 +2,50 @@ import { useState } from 'react';
 import Web3 from 'web3';
 import nftContract from './nftContract';
 import './app.css'; 
-import "./navbar"
 import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
 
 import CreateNFT from './CreateNFT';
+import LookUpNFT from './LookUpNFT';
 import BuyNFT from './BuyNFT';
+
+// Define Navbar component outside of App
+function Navbar({ isConnected, accounts, connectWallet }) {
+  return (
+    <nav className="navbar">
+      <div className="navbar-brand">Umkhonto</div>
+      <ul className="navbar-links">
+        <li><Link to="/create">Create NFT</Link></li>
+        <li><Link to="/look-up">Look Up NFT</Link></li>
+        <li><Link to="/buy">Buy NFT</Link></li>
+        <li>
+          {!isConnected ? (
+            <button onClick={connectWallet}>Connect Wallet</button>
+          ) : (
+            <span className="connection-status">Connected: {accounts[0]?.slice(0, 6)}...{accounts[0]?.slice(-4)}</span>
+          )}
+        </li>
+      </ul>
+    </nav>
+  );
+}
+
+// Define MyButtonIslands component outside of App
+function MyButtonIslands() {
+  const navigate = useNavigate();
+
+  return (
+    <div className="button-container">
+      <div className="button-island" onClick={() => navigate('/create')}>
+        <h2>Create NFT</h2>
+        <p>Start creating your own NFTs by uploading your digital art, music, or other collectibles!</p>
+      </div>
+      <div className="button-island" onClick={() => navigate('/buy')}>
+        <h2>Buy NFT</h2>
+        <p>Browse available NFTs and make purchases securely using cryptocurrency.</p>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   const [web3, setWeb3] = useState(null);
@@ -81,57 +120,14 @@ function App() {
     }
   };
 
-  function Navbar() {
-    return (
-      <nav className="navbar">
-        <div className="navbar-brand">Umkhonto</div>
-        <ul className="navbar-links">
-          <li><Link to="/create">Create NFT</Link></li>
-          <li><Link to="/buy">Buy NFT</Link></li>
-          <li>
-            {!isConnected ? (
-              <button onClick={connectWallet}>Connect Wallet</button>
-            ) : (
-              <span>Connected: {accounts[0]}</span>
-            )}
-          </li>
-        </ul>
-      </nav>
-    );
-  }
-
   return (
     <Router>
-      <div>
-        <Navbar />
-        <Routes>
-          <Route path="/create" element={<CreateNFT />} />
-          <Route path="/buy" element={<BuyNFT />} />
-          <Route path="/" element={<>
-            <MyButtonIslands />
-            <div>
-              <h3>Minted NFTs</h3>
-              {mintedNFTs.map((nft) => (
-                <div key={nft.token_id}>
-                  <img src={nft.image_url} alt={nft.name} />
-                  <p>{nft.name}</p>
-                </div>
-              ))}
-            </div>
-          </>} />
-        </Routes>
-      </div>
-    </Router>
-  );
-}
-
-function MyButtonIslands() {
-  const navigate = useNavigate();
-
-  return (
-    <Router>
-      <div className="app-container">
-        <Navbar />
+      <div className="app">
+        <Navbar 
+          isConnected={isConnected} 
+          accounts={accounts} 
+          connectWallet={connectWallet} 
+        />
         <Routes>
           <Route path="/create" element={<CreateNFT />} />
           <Route path="/look-up" element={<LookUpNFT />} />
@@ -141,17 +137,20 @@ function MyButtonIslands() {
               <h1>Everyday Struggles</h1>
               <p>Stories preserved as digital artifacts</p>
               <MyButtonIslands />
-              <div className="nft-grid">
-                <h3>Minted Stories</h3>
-                <div className="nft-grid">
-                  {mintedNFTs.map((nft) => (
-                    <div key={nft.token_id} className="nft-card">
-                      <img src={nft.image_url} alt={nft.name} />
-                      <p>{nft.name || 'Untitled Struggle'}</p>
-                    </div>
-                  ))}
+              
+              {mintedNFTs.length > 0 && (
+                <div className="minted-nfts-section">
+                  <h3>Your Minted Stories</h3>
+                  <div className="nft-grid">
+                    {mintedNFTs.map((nft) => (
+                      <div key={nft.token_id} className="nft-card">
+                        <img src={nft.image_url} alt={nft.name} />
+                        <p>{nft.name || 'Untitled Struggle'}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           } />
         </Routes>
