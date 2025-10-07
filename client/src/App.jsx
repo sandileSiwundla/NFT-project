@@ -17,6 +17,7 @@ function App() {
   const [mintAmount, setMintAmount] = useState(1); 
   const [isConnected, setIsConnected] = useState(false); 
   const [mintedNFTs, setMintedNFTs] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const connectWallet = async () => {
     if (window.ethereum) {
@@ -67,6 +68,7 @@ function App() {
     const apiUrl = `https://testnets-api.opensea.io/api/v1/assets?owner=${walletAddress}&asset_contract_address=${contractAddress}&order_direction=desc`;
 
     try {
+      setIsLoading(true);
       const response = await fetch(apiUrl);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -80,6 +82,8 @@ function App() {
       }
     } catch (error) {
       console.error("Failed to fetch NFTs from OpenSea", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -96,35 +100,49 @@ function App() {
           <Route path="/look-up" element={<LookUpNFT />} />
           <Route path="/buy" element={<BuyNFT />} />
           <Route path="/" element={
-            <div className="home-page">
-              <div className="hero-section">
+            <div className="home-page fade-in">
+              <div className="hero-section fade-in">
                 <h1>Everyday Struggles</h1>
                 <p className="hero-tagline">Preserved forever on the blockchain</p>
                 <div className="main-tagline">Never Forget</div>
               </div>
+
               <MyButtonIslands />
+
+              <div className="mint-action fade-in">
+                {isConnected ? (
+                  <button className="mint-btn" onClick={mint}>Mint Your Story</button>
+                ) : (
+                  <button className="connect-btn" onClick={connectWallet}>Connect Wallet</button>
+                )}
+              </div>
               
-              {mintedNFTs.length > 0 && (
-                <div className="minted-nfts-section">
-                  <h3>Your Preserved Stories</h3>
-                  <p className="section-tagline">Moments captured forever. Never forget.</p>
-                  <div className="nft-grid">
-                    {mintedNFTs.map((nft) => (
-                      <div key={nft.token_id} className="nft-card">
-                        <img src={nft.image_url} alt={nft.name} />
-                        <p>{nft.name || 'Untitled Struggle'}</p>
-                        <div className="nft-tagline">Never Forget</div>
-                      </div>
-                    ))}
-                  </div>
+              {isLoading ? (
+                <div className="loading-placeholder fade-in">
+                  Fetching your NFTs...
                 </div>
+              ) : (
+                mintedNFTs.length > 0 && (
+                  <div className="minted-nfts-section fade-in">
+                    <h3>Your Preserved Stories</h3>
+                    <p className="section-tagline">Moments captured forever. Never forget.</p>
+                    <div className="nft-grid">
+                      {mintedNFTs.map((nft) => (
+                        <div key={nft.token_id} className="nft-card">
+                          <img src={nft.image_url} alt={nft.name} />
+                          <p>{nft.name || 'Untitled Struggle'}</p>
+                          <div className="nft-tagline">Never Forget</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
               )}
             </div>
           } />
         </Routes>
         
-        {/* Footer with the saying */}
-        <footer className="app-footer">
+        <footer className="app-footer fade-in">
           <div className="footer-tagline">Never Forget</div>
           <p>Preserving everyday struggles on the blockchain</p>
         </footer>
