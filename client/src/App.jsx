@@ -1,56 +1,14 @@
 import { useState } from 'react';
 import Web3 from 'web3';
 import nftContract from './nftContract';
-import './app.css'; 
-import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
+import './app.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import CreateNFT from './CreateNFT';
 import LookUpNFT from './LookUpNFT';
 import BuyNFT from './BuyNFT';
-
-// Define Navbar component outside of App
-function Navbar({ isConnected, accounts, connectWallet }) {
-  return (
-    <nav className="navbar">
-      <div className="navbar-brand">
-        <div className="brand-main">Umkhonto</div>
-        <div className="brand-tagline">Never Forget</div>
-      </div>
-      <ul className="navbar-links">
-        <li><Link to="/create">Create NFT</Link></li>
-        <li><Link to="/look-up">Look Up NFT</Link></li>
-        <li><Link to="/buy">Buy NFT</Link></li>
-        <li>
-          {!isConnected ? (
-            <button onClick={connectWallet}>Connect Wallet</button>
-          ) : (
-            <span className="connection-status">Connected: {accounts[0]?.slice(0, 6)}...{accounts[0]?.slice(-4)}</span>
-          )}
-        </li>
-      </ul>
-    </nav>
-  );
-}
-
-// Define MyButtonIslands component outside of App
-function MyButtonIslands() {
-  const navigate = useNavigate();
-
-  return (
-    <div className="button-container">
-      <div className="button-island" onClick={() => navigate('/create')}>
-        <h2>Preserve Your Story</h2>
-        <p>Mint your daily struggles as eternal NFTs. Never forget the moments that shaped you.</p>
-        <div className="tagline">Never Forget</div>
-      </div>
-      <div className="button-island" onClick={() => navigate('/buy')}>
-        <h2>Discover Stories</h2>
-        <p>Connect with others' experiences. Own a piece of real human struggle and resilience.</p>
-        <div className="tagline">Never Forget</div>
-      </div>
-    </div>
-  );
-}
+import Navbar from './Navbar';
+import MyButtonIslands from './MyButtonIslands';
 
 function App() {
   const [web3, setWeb3] = useState(null);
